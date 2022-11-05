@@ -6,9 +6,8 @@ import java.awt.*;
 public class ShootingGameFrame extends JFrame{
 	
 	private LifePanel lPanel = new LifePanel();
-	//private ScorePanel sPanel = new ScorePanel();
+	private ScorePanel sPanel = new ScorePanel();
 	private GamePanel gPanel = new GamePanel();
-	private TimerPanel tPanel = new TimerPanel();
 	
 	private JSplitPane gPane = new JSplitPane();
 	
@@ -29,13 +28,13 @@ public class ShootingGameFrame extends JFrame{
 		gPane.setDividerLocation(50);
 		gPane.setEnabled(false);
 		gPane.setBottomComponent(gPanel);
-		//gPane.setTopComponent(lPanel);
+		
 		
 		JSplitPane sPane = new JSplitPane();
 		sPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-		sPane.setDividerLocation(200);
+		sPane.setDividerLocation(400);
 		gPane.setTopComponent(sPane);
-		sPane.setRightComponent(tPanel);
+		sPane.setRightComponent(sPanel);
 		sPane.setLeftComponent(lPanel);
 		sPane.setEnabled(false);
 	}
