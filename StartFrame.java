@@ -25,12 +25,13 @@ public class StartFrame extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
-				SecondFrame sf = new SecondFrame();
+				GameFrame sf = new GameFrame();
 			}
 		});
 		
 		setResizable(false);
 		setVisible(true);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
 }
