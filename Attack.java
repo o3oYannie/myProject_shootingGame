@@ -4,12 +4,13 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class Attack {
-	Point pos;
+	int x,y;
 	Attack(int x, int y){
-		pos = new Point(x,y);
+		this.x=x;
+		this.y=y;
 		
 	}
 	public void move() {
-		pos.x+=10;
+		x+=10;
 	}
 }

@@ -6,6 +6,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.*;
 import java.awt.event.*;
+import javax.imageio.*;
+import java.io.*;
+import java.awt.image.*;
+
 
 
 public class GameFrame extends JFrame implements KeyListener, Runnable{
@@ -24,6 +28,11 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	
 	private int count;
 	private int rand;
+	private int enemy_width;
+	private int enemy_height;
+	private int attack_width;
+	private int attack_height;
+	
 	private Enemy enemy;
 	private Attack attack;
 	//키조작 on/off
@@ -57,6 +66,12 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	public void init() {
 		x=0;
 		y=200;
+		
+		enemy_width = imageWidth("enemy.png");
+		enemy_height = imageHeight("enemy.png");
+		
+		attack_width = imageWidth("attack.png");
+		attack_height = imageHeight("attack.png");
 	}
 
 	//게임 시작 메소드
@@ -72,7 +87,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		// TODO Auto-generated method stub
 		try {
 			while(true) {
-				rand = (int)(Math.random()*700);
+				
 				KeyProcess();
 				attackProcess();
 				enemyProcess();
@@ -95,6 +110,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	}
 	
 	public void update(Graphics g) {
+		
 		drawCanvas();
 		drawAttack();
 		drawEnemy();
@@ -102,19 +118,15 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		
 	}
 	public void drawAttack() {
-		for(int i = 0; i< attack_List.size(); i++) {
+		for(int i = 0; i< attack_List.size(); ++  i) {
 			attack=(Attack)(attack_List.get(i));
-			bufferGraphics.drawImage(attackImg, attack.pos.x + 100, attack.pos.y+40,this);
-			attack.move();
+			bufferGraphics.drawImage(attackImg, attack.x, attack.y,this);
 			
-			if(attack.pos.x> 900) {
-				attack_List.remove(i);
-			}
 		}
 	}
 	
 	public void drawEnemy() {
-		for(int i=0;i<enemy_List.size();i++) {
+		for(int i=0;i<enemy_List.size();++i) {
 			enemy=(Enemy)(enemy_List.get(i));
 			bufferGraphics.drawImage(enemyImg,enemy.x,enemy.y,this);
 			
@@ -137,8 +149,23 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	
 	public void attackProcess(){
 		if(KSpace == true) {
-			attack = new Attack(x,y);
+			attack = new Attack(x+100,y+40);
 			attack_List.add(attack);
+		}
+		
+		for(int i=0;i<attack_List.size();++i) {
+			attack = (Attack)attack_List.get(i);
+			attack.move();
+			if(attack.x>900-20) {
+				attack_List.remove(i);
+			}
+			for(int j=0;j<enemy_List.size();++j) {
+				enemy=(Enemy)enemy_List.get(j);
+				if(killEnemy(attack.x,attack.y,enemy.x,enemy.y,attack_width,attack_height,enemy_width,enemy_height)) {
+					attack_List.remove(i);
+					enemy_List.remove(j);
+				}
+			}
 		}
 	}
 	
@@ -152,10 +179,24 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		}
 		
 		if(count%300 == 0) {
-			
+			rand = (int)(Math.random()*650+10);
 			enemy = new Enemy(700+100,rand);
 			enemy_List.add(enemy);
 		}
+	}
+	
+	public boolean killEnemy(int ax,int ay,int ex,int ey,int aw,int ah,int ew,int eh) {
+		boolean kill = false;
+		
+		if(Math.abs((ax+aw/2)-(ex+ew/2))<(ew/2+aw/2) && 
+				Math.abs((ay+ah/2)-(ey+eh/2))<(eh/2+ah/2)){
+			System.out.println("kill");
+			kill=true;
+		}
+		else {
+			kill = false;
+		}
+		return kill;
 	}
 	
 	
@@ -170,7 +211,6 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		// TODO Auto-generated method stub
 		switch(e.getKeyCode()) {
 		case KeyEvent.VK_UP:
-			System.out.println("pressed up");
 			KUp=true;
 			break;
 		case KeyEvent.VK_DOWN:
@@ -183,6 +223,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			KRight=true;
 			break;
 		case KeyEvent.VK_SPACE:
+			System.out.println("attack");
 			KSpace = true;
 			break;
 		}
@@ -210,5 +251,29 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		}
 	}
 	
+	public int imageWidth(String file) {
+		int width = 0;
+		try {
+			File f = new File(file);
+			BufferedImage buf = ImageIO.read(f);
+			width=buf.getWidth();
+		}catch(Exception e) {
+			
+		}
+		return width;
+		
+	}
+	public int imageHeight(String file) {
+		int height = 0;
+		try {
+			File f = new File(file);
+			BufferedImage buf = ImageIO.read(f);
+			height=buf.getHeight();
+		}catch(Exception e) {
+			
+		}
+		return height;
+		
+	}
 	
 }
