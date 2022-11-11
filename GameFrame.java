@@ -149,8 +149,10 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	
 	public void attackProcess(){
 		if(KSpace == true) {
+			if(count%10==0) {
 			attack = new Attack(x+100,y+40);
-			attack_List.add(attack);
+			
+			attack_List.add(attack);}
 		}
 		
 		for(int i=0;i<attack_List.size();++i) {
