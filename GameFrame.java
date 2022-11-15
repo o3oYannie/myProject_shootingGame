@@ -149,7 +149,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	
 	public void attackProcess(){
 		if(KSpace == true) {
-			if(count%10==0) {
+			if(count%5==0) {
 			attack = new Attack(x+100,y+40);
 			
 			attack_List.add(attack);}
@@ -180,8 +180,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			}
 		}
 		
-		if(count%300 == 0) {
-			rand = (int)(Math.random()*650+10);
+		if(count%100 == 0) {
+			rand = (int)(Math.random()*650+20);
 			enemy = new Enemy(700+100,rand);
 			enemy_List.add(enemy);
 		}
