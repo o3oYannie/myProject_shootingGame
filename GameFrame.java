@@ -18,6 +18,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private ImageIcon userImage = new ImageIcon("sangsangBoogie.png");
 	private ImageIcon attackItem = new ImageIcon("attack.png");
 	private ImageIcon enemyIcon =  new ImageIcon("enemy.png");
+	private ImageIcon lifeIcon =  new ImageIcon("lifeheart.png");
 	private int x; //user초기값
 	private int y; //user 초기값
 	private Image user = userImage.getImage();
@@ -25,6 +26,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private ArrayList attack_List = new ArrayList();
 	private ArrayList enemy_List = new ArrayList();
 	private Image attackImg = attackItem.getImage();
+	private Image lifeImg = lifeIcon.getImage();
 	
 	private int count;
 	private int rand;
@@ -32,6 +34,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private int enemy_height;
 	private int attack_width;
 	private int attack_height;
+	private int life;
 	
 	private Enemy enemy;
 	private Attack attack;
@@ -66,6 +69,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	public void init() {
 		x=0;
 		y=200;
+		life = 5;
 		
 		enemy_width = imageWidth("enemy.png");
 		enemy_height = imageHeight("enemy.png");
@@ -91,6 +95,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 				KeyProcess();
 				attackProcess();
 				enemyProcess();
+				lifeProcess();
 				repaint();
 				Thread.sleep(20);
 				count++;
@@ -114,6 +119,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		drawCanvas();
 		drawAttack();
 		drawEnemy();
+		drawLife();
 		g.drawImage(bufferImg,0,0,this);
 		
 	}
@@ -131,6 +137,10 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			bufferGraphics.drawImage(enemyImg,enemy.x,enemy.y,this);
 			
 		}
+	}
+	
+	public void drawLife() {
+		bufferGraphics.drawImage(lifeImg,20,50,this);
 	}
 	
 	public void drawCanvas() {
@@ -185,6 +195,10 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			enemy = new Enemy(700+100,rand);
 			enemy_List.add(enemy);
 		}
+	}
+	
+	public void lifeProcess() {
+		
 	}
 	
 	public boolean killEnemy(int ax,int ay,int ex,int ey,int aw,int ah,int ew,int eh) {

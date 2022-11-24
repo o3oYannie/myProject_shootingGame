@@ -16,9 +16,10 @@ public class StartFrame extends JFrame{
 		setLocation(200,50);
 		setContentPane(startPanel);
 		
-		startBtn.setSize(150,100);
-		startBtn.setLocation(200,200);
+		startBtn.setSize(500,100);
+		startBtn.setLocation(200,300);
 		startBtn.setFont(new Font("Gothic",Font.ITALIC,50));
+		startBtn.setText("START");
 		add(startBtn);
 		
 		startBtn.addActionListener(new ActionListener() {
