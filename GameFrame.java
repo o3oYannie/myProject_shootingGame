@@ -34,6 +34,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private int enemy_height;
 	private int attack_width;
 	private int attack_height;
+	private int user_width;
+	private int user_height;
 	private int life;
 	
 	private Enemy enemy;
@@ -76,6 +78,9 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		
 		attack_width = imageWidth("attack.png");
 		attack_height = imageHeight("attack.png");
+		
+		user_width = imageWidth("sangsangBoogie.png");
+		user_height = imageHeight("sangsangBoogie.png");
 	}
 
 	//게임 시작 메소드
@@ -198,7 +203,13 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	}
 	
 	public void lifeProcess() {
-		
+		for(int j=0;j<enemy_List.size();++j) {
+			enemy=(Enemy)enemy_List.get(j);
+			if(killEnemy(x,y,enemy.x,enemy.y,user_width,user_height,enemy_width,enemy_height)) {
+				life--;
+			}
+		}
+		System.out.println(life);
 	}
 	
 	public boolean killEnemy(int ax,int ay,int ex,int ey,int aw,int ah,int ew,int eh) {
