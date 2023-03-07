@@ -19,15 +19,18 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private ImageIcon attackItem = new ImageIcon("attack.png");
 	private ImageIcon enemyIcon =  new ImageIcon("enemy.png");
 	private ImageIcon lifeIcon =  new ImageIcon("lifeheart.png");
+	private ImageIcon backIcon = new ImageIcon("galaxy.png");
 	private int x; //user초기값
 	private int y; //user 초기값
 	private Image user = userImage.getImage();
 	private Image enemyImg = enemyIcon.getImage();
 	private ArrayList attack_List = new ArrayList();
 	private ArrayList enemy_List = new ArrayList();
+	private ArrayList life_List = new ArrayList();
 	private Image attackImg = attackItem.getImage();
 	private Image lifeImg = lifeIcon.getImage();
-	
+	private Image backImg = backIcon.getImage();
+
 	private int count;
 	private int rand;
 	private int enemy_width;
@@ -36,16 +39,19 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private int attack_height;
 	private int user_width;
 	private int user_height;
-	private int life;
+	private int lifes;
 	
 	private Enemy enemy;
 	private Attack attack;
+	private Life life;
 	//키조작 on/off
 	private boolean KUp =false;
 	private boolean KDown=false;
 	private boolean KLeft=false;
 	private boolean KRight = false;
 	private boolean KSpace = false;
+	
+	private boolean lifeInit = true;
 	
 	private Thread thread;
 	
@@ -71,7 +77,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	public void init() {
 		x=0;
 		y=200;
-		life = 5;
+		lifes = 5;
+		
 		
 		enemy_width = imageWidth("enemy.png");
 		enemy_height = imageHeight("enemy.png");
@@ -120,7 +127,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	}
 	
 	public void update(Graphics g) {
-		
+		drawBackGround();
 		drawCanvas();
 		drawAttack();
 		drawEnemy();
@@ -144,16 +151,21 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		}
 	}
 	
-	public void drawLife() {
-		bufferGraphics.drawImage(lifeImg,20,50,this);
+	public void drawLife() { //목숨 다섯개 그리기
+		for(int i=0; i<life_List.size();++i) {
+			life=(Life)(life_List.get(i));
+			bufferGraphics.drawImage(lifeImg,20+i*30,50,this);
+		}
 	}
 	
 	public void drawCanvas() {
-		bufferGraphics.clearRect(0,0,900,700);
+		//bufferGraphics.clearRect(0,0,900,700);
 		bufferGraphics.drawImage(user,x,y,this);
 	}
 	
-	
+	public void drawBackGround() {
+		bufferGraphics.drawImage(backImg,0,0,this);
+	}
 	
 	public void KeyProcess() {
 		if(KUp == true) y -= 5;
@@ -165,9 +177,10 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	public void attackProcess(){
 		if(KSpace == true) {
 			if(count%5==0) {
-			attack = new Attack(x+100,y+40);
-			
-			attack_List.add(attack);}
+				attack = new Attack(x+100,y+40);
+				
+				attack_List.add(attack);
+			}
 		}
 		
 		for(int i=0;i<attack_List.size();++i) {
@@ -203,13 +216,28 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	}
 	
 	public void lifeProcess() {
+		
+		if(lifeInit==true) {
+			for(int i=0;i<5;i++) {
+				life = new Life(50,50);
+				life_List.add(life);
+			}
+			lifeInit=false;
+		}
+		
 		for(int j=0;j<enemy_List.size();++j) {
 			enemy=(Enemy)enemy_List.get(j);
-			if(killEnemy(x,y,enemy.x,enemy.y,user_width,user_height,enemy_width,enemy_height)) {
-				life--;
+			if(killEnemy(x,y,enemy.x,enemy.y,user_width,user_height,enemy_width,enemy_height)) { //enemy와 닿으면
+				life_List.remove(life_List.size()-1);
+				lifes--;
+				x=x-100; //적이랑 부딪히면 뒤로 튕겨나기
+				if(life_List.size()==0) {
+					//목숨이 0이 되면 게임 종료
+					System.out.println("the end");
+				}
 			}
 		}
-		System.out.println(life);
+		System.out.println(lifes);
 	}
 	
 	public boolean killEnemy(int ax,int ay,int ex,int ey,int aw,int ah,int ew,int eh) {
