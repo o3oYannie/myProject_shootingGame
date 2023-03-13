@@ -20,6 +20,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private ImageIcon enemyIcon =  new ImageIcon("enemy.png");
 	private ImageIcon lifeIcon =  new ImageIcon("lifeheart.png");
 	private ImageIcon backIcon = new ImageIcon("galaxy.png");
+	private ImageIcon failIcon = new ImageIcon("failboogie.png");
 	private int x; //user초기값
 	private int y; //user 초기값
 	private Image user = userImage.getImage();
@@ -30,7 +31,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private Image attackImg = attackItem.getImage();
 	private Image lifeImg = lifeIcon.getImage();
 	private Image backImg = backIcon.getImage();
-
+	private Image failImg = failIcon.getImage();
+	
 	private int count;
 	private int rand;
 	private int enemy_width;
@@ -40,6 +42,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private int user_width;
 	private int user_height;
 	private int lifes;
+	private int score;
 	
 	private Enemy enemy;
 	private Attack attack;
@@ -78,7 +81,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		x=0;
 		y=200;
 		lifes = 5;
-		
+		score = 0;
 		
 		enemy_width = imageWidth("enemy.png");
 		enemy_height = imageHeight("enemy.png");
@@ -132,6 +135,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		drawAttack();
 		drawEnemy();
 		drawLife();
+		drawScore();
 		g.drawImage(bufferImg,0,0,this);
 		
 	}
@@ -167,6 +171,16 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		bufferGraphics.drawImage(backImg,0,0,this);
 	}
 	
+	public void drawScore() {
+		bufferGraphics.setColor(Color.WHITE);
+		bufferGraphics.setFont(new Font("Arail",Font.BOLD,50));
+		bufferGraphics.drawString(Integer.toString(score),720,80);
+	}
+	
+	public void drawFail() {
+		bufferGraphics.drawImage(failImg,100,100,this);
+	}
+	
 	public void KeyProcess() {
 		if(KUp == true) y -= 5;
 		if(KDown == true) y+=5;
@@ -178,7 +192,6 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		if(KSpace == true) {
 			if(count%5==0) {
 				attack = new Attack(x+100,y+40);
-				
 				attack_List.add(attack);
 			}
 		}
@@ -194,6 +207,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 				if(killEnemy(attack.x,attack.y,enemy.x,enemy.y,attack_width,attack_height,enemy_width,enemy_height)) {
 					attack_List.remove(i);
 					enemy_List.remove(j);
+					score+=100; //적 퇴치 후 점수 up
+					System.out.println("score = "+score);
 				}
 			}
 		}
@@ -231,9 +246,13 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 				life_List.remove(life_List.size()-1);
 				lifes--;
 				x=x-100; //적이랑 부딪히면 뒤로 튕겨나기
-				if(life_List.size()==0) {
+				if(life_List.size()<=0) {
 					//목숨이 0이 되면 게임 종료
 					System.out.println("the end");
+					drawFail();
+					thread.interrupt();
+					//결과 창 띄우기
+					
 				}
 			}
 		}
