@@ -10,4 +10,8 @@ public class Enemy {
 		x-=3;
 		
 	}
+	public void move2() {
+		x-=8;
+		
+	}
 }
