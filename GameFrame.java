@@ -18,6 +18,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private ImageIcon userImage = new ImageIcon("sangsangBoogie.png");
 	private ImageIcon attackItem = new ImageIcon("attack.png");
 	private ImageIcon enemyIcon =  new ImageIcon("enemy.png");
+	private ImageIcon enemy2Icon = new ImageIcon("enemy2.png");
 	private ImageIcon lifeIcon =  new ImageIcon("lifeheart.png");
 	private ImageIcon backIcon = new ImageIcon("galaxy.png");
 	private ImageIcon failIcon = new ImageIcon("failboogie.png");
@@ -25,8 +26,10 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private int y; //user 초기값
 	private Image user = userImage.getImage();
 	private Image enemyImg = enemyIcon.getImage();
+	private Image enemy2Img = enemy2Icon.getImage();
 	private ArrayList attack_List = new ArrayList();
 	private ArrayList enemy_List = new ArrayList();
+	private ArrayList enemy2_List = new ArrayList();
 	private ArrayList life_List = new ArrayList();
 	private Image attackImg = attackItem.getImage();
 	private Image lifeImg = lifeIcon.getImage();
@@ -37,14 +40,18 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private int rand;
 	private int enemy_width;
 	private int enemy_height;
+	private int enemy2_width;
+	private int enemy2_height;
 	private int attack_width;
 	private int attack_height;
 	private int user_width;
 	private int user_height;
 	private int lifes;
 	private int score;
+	private int time;
 	
 	private Enemy enemy;
+	private Enemy enemy2;
 	private Attack attack;
 	private Life life;
 	//키조작 on/off
@@ -82,9 +89,12 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		y=200;
 		lifes = 5;
 		score = 0;
-		
+		time = 0;
 		enemy_width = imageWidth("enemy.png");
 		enemy_height = imageHeight("enemy.png");
+		
+		enemy2_width = imageWidth("enemy2.png");
+		enemy2_height = imageHeight("enemy2.png");
 		
 		attack_width = imageWidth("attack.png");
 		attack_height = imageHeight("attack.png");
@@ -110,10 +120,13 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 				KeyProcess();
 				attackProcess();
 				enemyProcess();
+				enemy2Process();
 				lifeProcess();
 				repaint();
 				Thread.sleep(20);
 				count++;
+				time++;
+				System.out.println(time);
 			}
 		}catch(Exception e) {
 			
@@ -136,7 +149,11 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		drawEnemy();
 		drawLife();
 		drawScore();
+		if(time>300) {
+			drawEnemy2();
+		}
 		g.drawImage(bufferImg,0,0,this);
+		
 		
 	}
 	public void drawAttack() {
@@ -153,6 +170,15 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			bufferGraphics.drawImage(enemyImg,enemy.x,enemy.y,this);
 			
 		}
+	}
+	
+	public void drawEnemy2() {
+		for(int i=0;i<enemy2_List.size();++i) {
+			enemy2=(Enemy)(enemy2_List.get(i));
+			bufferGraphics.drawImage(enemy2Img,enemy2.x,enemy2.y,this);
+			
+		}
+
 	}
 	
 	public void drawLife() { //목숨 다섯개 그리기
@@ -211,6 +237,14 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 					System.out.println("score = "+score);
 				}
 			}
+			for(int z=0;z<enemy2_List.size();++z) {
+				if(killEnemy(attack.x,attack.y,enemy2.x,enemy2.y,attack_width,attack_height,enemy2_width,enemy2_height)) {
+					attack_List.remove(i);
+					enemy2_List.remove(z);
+					score+=300; //적 퇴치 후 점수 up
+					System.out.println("score = "+score);
+				}
+			}
 		}
 	}
 	
@@ -227,6 +261,23 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			rand = (int)(Math.random()*650+20);
 			enemy = new Enemy(700+100,rand);
 			enemy_List.add(enemy);
+		}
+	}
+	
+	public void enemy2Process() {
+		for(int i = 0; i<enemy2_List.size();i++) {
+			enemy2 = (Enemy)(enemy2_List.get(i));
+			enemy2.move2();
+			if(enemy2.x<-200) {
+				enemy2_List.remove(i);
+			}
+		}
+		if(time>300) {
+			if(count%100 == 5) {
+				rand = (int)(Math.random()*650+20);
+				enemy2 = new Enemy(700+100,rand);
+				enemy2_List.add(enemy2);
+			}
 		}
 	}
 	
@@ -256,7 +307,23 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 				}
 			}
 		}
-		System.out.println(lifes);
+		for(int j=0;j<enemy2_List.size();++j) {
+			enemy2=(Enemy)enemy2_List.get(j);
+			if(killEnemy(x,y,enemy2.x,enemy2.y,user_width,user_height,enemy2_width,enemy2_height)) { //enemy와 닿으면
+				life_List.remove(life_List.size()-1);
+				lifes--;
+				x=x-100; //적이랑 부딪히면 뒤로 튕겨나기
+				if(life_List.size()<=0) {
+					//목숨이 0이 되면 게임 종료
+					System.out.println("the end");
+					drawFail();
+					thread.interrupt();
+					//결과 창 띄우기
+					
+				}
+			}
+		}
+		
 	}
 	
 	public boolean killEnemy(int ax,int ay,int ex,int ey,int aw,int ah,int ew,int eh) {
