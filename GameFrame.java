@@ -296,7 +296,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			if(killEnemy(x,y,enemy.x,enemy.y,user_width,user_height,enemy_width,enemy_height)) { //enemy와 닿으면
 				life_List.remove(life_List.size()-1);
 				lifes--;
-				x=x-100; //적이랑 부딪히면 뒤로 튕겨나기
+				x=0;
+				y=200; //적이랑 부딪히면 제자리로 가기;
 				if(life_List.size()<=0) {
 					//목숨이 0이 되면 게임 종료
 					System.out.println("the end");
@@ -312,7 +313,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			if(killEnemy(x,y,enemy2.x,enemy2.y,user_width,user_height,enemy2_width,enemy2_height)) { //enemy와 닿으면
 				life_List.remove(life_List.size()-1);
 				lifes--;
-				x=x-100; //적이랑 부딪히면 뒤로 튕겨나기
+				x=0;
+				y=200; //적이랑 부딪히면 제자리로 가기;
 				if(life_List.size()<=0) {
 					//목숨이 0이 되면 게임 종료
 					System.out.println("the end");
