@@ -1,13 +1,21 @@
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.awt.event.*;
+import java.awt.Graphics;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class StartFrame extends JFrame{
-	private JButton startBtn = new JButton();
+	
 	private StartPanel startPanel = new StartPanel();
+	private ImageIcon startIcon = new ImageIcon("start.png");
+	private ImageIcon startClickIcon = new ImageIcon("startclick.png");
+	private ImageIcon startBackIcon = new ImageIcon("startback.png");
+	private Image startBackImg = startBackIcon.getImage();
+	private JButton startBtn = new JButton(startIcon);
 	
 	public StartFrame() {
 		setTitle("Ω¥∆√ ∞‘¿”");
@@ -16,10 +24,15 @@ public class StartFrame extends JFrame{
 		setLocation(200,50);
 		setContentPane(startPanel);
 		
-		startBtn.setSize(500,100);
-		startBtn.setLocation(200,300);
+		startBtn.setSize(400,145);
+		startBtn.setLocation(230,500);
 		startBtn.setFont(new Font("Gothic",Font.ITALIC,50));
-		startBtn.setText("START");
+		startBtn.setBorderPainted(false);
+		startBtn.setContentAreaFilled(false);
+		startBtn.setRolloverIcon(startClickIcon);
+		//startBtn.setText("START");
+		
+		
 		add(startBtn);
 		
 		startBtn.addActionListener(new ActionListener() {
@@ -30,11 +43,16 @@ public class StartFrame extends JFrame{
 			}
 		});
 		
+		
+		
 		setResizable(false);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
+	public void paint(Graphics g) {
+		g.drawImage(startBackImg, 0, 0, null);
+	}
 }
 
 class StartPanel extends JPanel{
