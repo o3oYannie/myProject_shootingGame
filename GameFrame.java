@@ -122,6 +122,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 				enemyProcess();
 				enemy2Process();
 				lifeProcess();
+				timeProcess();
 				repaint();
 				Thread.sleep(20);
 				count++;
@@ -212,6 +213,12 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		if(KDown == true) y+=5;
 		if(KLeft == true) x-=5;
 		if(KRight == true) x+=5;
+	}
+	
+	public void timeProcess() {
+		if(time>400) {
+			thread.interrupt();
+		}
 	}
 	
 	public void attackProcess(){
@@ -327,6 +334,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		}
 		
 	}
+	
+
 	
 	public boolean killEnemy(int ax,int ay,int ex,int ey,int aw,int ah,int ew,int eh) {
 		boolean kill = false;
