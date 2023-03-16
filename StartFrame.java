@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class StartFrame extends JFrame{
@@ -14,9 +15,10 @@ public class StartFrame extends JFrame{
 	private ImageIcon startIcon = new ImageIcon("start.png");
 	private ImageIcon startClickIcon = new ImageIcon("startclick.png");
 	private ImageIcon startBackIcon = new ImageIcon("startback.png");
+	private ImageIcon startBoogieIcon = new ImageIcon("startboogie.png");
 	private Image startBackImg = startBackIcon.getImage();
+	private Image startBoogieImg = startBoogieIcon.getImage();
 	private JButton startBtn = new JButton(startIcon);
-	
 	public StartFrame() {
 		setTitle("Ω¥∆√ ∞‘¿”");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,9 +33,9 @@ public class StartFrame extends JFrame{
 		startBtn.setContentAreaFilled(false);
 		startBtn.setRolloverIcon(startClickIcon);
 		//startBtn.setText("START");
-		
-		
 		add(startBtn);
+		
+
 		
 		startBtn.addActionListener(new ActionListener() {
 			@Override
@@ -52,6 +54,7 @@ public class StartFrame extends JFrame{
 	
 	public void paint(Graphics g) {
 		g.drawImage(startBackImg, 0, 0, null);
+		g.drawImage(startBoogieImg,60,100,null);
 	}
 }
 
