@@ -49,7 +49,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private int lifes;
 	private int score;
 	private int time;
-	
+	private boolean game=false;
 	private Enemy enemy;
 	private Enemy enemy2;
 	private Attack attack;
@@ -153,45 +153,56 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		if(time>300) {
 			drawEnemy2();
 		}
+		if(game==true) {
+			drawFail();
+		}
 		g.drawImage(bufferImg,0,0,this);
 		
 		
 	}
 	public void drawAttack() {
-		for(int i = 0; i< attack_List.size(); ++  i) {
-			attack=(Attack)(attack_List.get(i));
-			bufferGraphics.drawImage(attackImg, attack.x, attack.y,this);
-			
+		if(game == false) {
+			for(int i = 0; i< attack_List.size(); ++  i) {
+				attack=(Attack)(attack_List.get(i));
+				bufferGraphics.drawImage(attackImg, attack.x, attack.y,this);
+				
+			}
 		}
 	}
 	
 	public void drawEnemy() {
-		for(int i=0;i<enemy_List.size();++i) {
-			enemy=(Enemy)(enemy_List.get(i));
-			bufferGraphics.drawImage(enemyImg,enemy.x,enemy.y,this);
-			
+		if(game == false) {
+			for(int i=0;i<enemy_List.size();++i) {
+				enemy=(Enemy)(enemy_List.get(i));
+				bufferGraphics.drawImage(enemyImg,enemy.x,enemy.y,this);
+			}
 		}
 	}
 	
 	public void drawEnemy2() {
-		for(int i=0;i<enemy2_List.size();++i) {
-			enemy2=(Enemy)(enemy2_List.get(i));
-			bufferGraphics.drawImage(enemy2Img,enemy2.x,enemy2.y,this);
-			
+		if(game == false) {
+			for(int i=0;i<enemy2_List.size();++i) {
+				enemy2=(Enemy)(enemy2_List.get(i));
+				bufferGraphics.drawImage(enemy2Img,enemy2.x,enemy2.y,this);
+			}
 		}
 
 	}
 	
 	public void drawLife() { //格见 促几俺 弊府扁
-		for(int i=0; i<life_List.size();++i) {
-			life=(Life)(life_List.get(i));
-			bufferGraphics.drawImage(lifeImg,20+i*30,50,this);
+		if(game == false) {
+			for(int i=0; i<life_List.size();++i) {
+				life=(Life)(life_List.get(i));
+				bufferGraphics.drawImage(lifeImg,20+i*30,50,this);
+			}
 		}
 	}
 	
 	public void drawCanvas() {
 		//bufferGraphics.clearRect(0,0,900,700);
-		bufferGraphics.drawImage(user,x,y,this);
+		if(game == false) {
+			bufferGraphics.drawImage(user,x,y,this);
+		}
 	}
 	
 	public void drawBackGround() {
@@ -199,9 +210,11 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	}
 	
 	public void drawScore() {
-		bufferGraphics.setColor(Color.WHITE);
-		bufferGraphics.setFont(new Font("Arail",Font.BOLD,50));
-		bufferGraphics.drawString(Integer.toString(score),720,80);
+		if(game == false) {
+			bufferGraphics.setColor(Color.WHITE);
+			bufferGraphics.setFont(new Font("Arail",Font.BOLD,50));
+			bufferGraphics.drawString(Integer.toString(score),720,80);
+		}
 	}
 	
 	public void drawFail() {
@@ -217,7 +230,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	
 	public void timeProcess() {
 		if(time>400) {
-			thread.interrupt();
+			game=true;
+			//thread.interrupt();
 		}
 	}
 	
