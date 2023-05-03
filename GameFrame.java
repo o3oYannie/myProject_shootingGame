@@ -17,11 +17,13 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 
 	private ImageIcon userImage = new ImageIcon("sangsangBoogie.png");
 	private ImageIcon attackItem = new ImageIcon("attack.png");
-	private ImageIcon enemyIcon =  new ImageIcon("enemy.png");
-	private ImageIcon enemy2Icon = new ImageIcon("enemy2.png");
+	private ImageIcon enemyIcon =  new ImageIcon("alien1.png");
+	private ImageIcon enemy2Icon = new ImageIcon("alien2.png");
 	private ImageIcon lifeIcon =  new ImageIcon("lifeheart.png");
 	private ImageIcon backIcon = new ImageIcon("galaxy.png");
 	private ImageIcon failIcon = new ImageIcon("failboogie.png");
+	private ImageIcon warningIcon = new ImageIcon("warning.png");
+	private ImageIcon bossIcon = new ImageIcon("alienboss.png");
 	private int x; //user초기값
 	private int y; //user 초기값
 	private Image user = userImage.getImage();
@@ -31,17 +33,21 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private ArrayList enemy_List = new ArrayList();
 	private ArrayList enemy2_List = new ArrayList();
 	private ArrayList life_List = new ArrayList();
+	private ArrayList boss_List = new ArrayList();
 	private Image attackImg = attackItem.getImage();
 	private Image lifeImg = lifeIcon.getImage();
 	private Image backImg = backIcon.getImage();
 	private Image failImg = failIcon.getImage();
-	
+	private Image warningImg = warningIcon.getImage();
+	private Image bossImg = bossIcon.getImage();
 	private int count;
 	private int rand;
 	private int enemy_width;
 	private int enemy_height;
 	private int enemy2_width;
 	private int enemy2_height;
+	private int boss_width;
+	private int boss_height;
 	private int attack_width;
 	private int attack_height;
 	private int user_width;
@@ -49,11 +55,15 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private int lifes;
 	private int score;
 	private int time;
+	private int bossTime=500;
+	private int attackCount=0; //보스에게 공격한 수
 	private boolean game=false;
+	private boolean warning = false;
 	private Enemy enemy;
 	private Enemy enemy2;
 	private Attack attack;
 	private Life life;
+	private Boss boss;
 	//키조작 on/off
 	private boolean KUp =false;
 	private boolean KDown=false;
@@ -90,11 +100,14 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		lifes = 5;
 		score = 0;
 		time = 0;
-		enemy_width = imageWidth("enemy.png");
-		enemy_height = imageHeight("enemy.png");
+		enemy_width = imageWidth("alien1.png");
+		enemy_height = imageHeight("alien1.png");
 		
-		enemy2_width = imageWidth("enemy2.png");
-		enemy2_height = imageHeight("enemy2.png");
+		enemy2_width = imageWidth("alien2.png");
+		enemy2_height = imageHeight("alien2.png");
+		
+		boss_width = imageWidth("alienboss.png");
+		boss_height = imageHeight("alienboss.png");
 		
 		attack_width = imageWidth("attack.png");
 		attack_height = imageHeight("attack.png");
@@ -123,6 +136,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 				enemy2Process();
 				lifeProcess();
 				timeProcess();
+				bossProcess();
 				repaint();
 				Thread.sleep(20);
 				count++;
@@ -150,8 +164,12 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		drawEnemy();
 		drawLife();
 		drawScore();
+		drawWarning();
 		if(time>300) {
 			drawEnemy2();
+		}
+		if(time>bossTime) {
+			drawBoss();
 		}
 		if(game==true) {
 			drawFail();
@@ -217,21 +235,43 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		}
 	}
 	
+	public void drawWarning() {
+		if(warning==true) {
+			bufferGraphics.drawImage(warningImg,200,120,this);}
+	}
+	
 	public void drawFail() {
-		bufferGraphics.drawImage(failImg,100,100,this);
+		bufferGraphics.drawImage(failImg,100,120,this);
+	}
+	
+	public void drawBoss() {
+		for(int i=0; i<boss_List.size();++i) {
+			boss=(Boss)(boss_List.get(i));
+			bufferGraphics.drawImage(bossImg,boss.x,boss.y,this);
+		}
 	}
 	
 	public void KeyProcess() {
-		if(KUp == true) y -= 5;
-		if(KDown == true) y+=5;
-		if(KLeft == true) x-=5;
-		if(KRight == true) x+=5;
+		if(KUp == true) y -= 7;
+		if(KDown == true) y+=7;
+		if(KLeft == true) x-=7;
+		if(KRight == true) x+=7;
 	}
 	
 	public void timeProcess() {
-		if(time>400) {
-			game=true;
-			//thread.interrupt();
+		if(time>(bossTime-100)) { //적 보스 등장
+			enemy_List.clear();
+			enemy2_List.clear(); //보스 외의 적들 사라짐
+			for(int i=0;i<100;i++) {
+				if(i>20&&i>40)
+					warning=false; 
+				else if(i>0&&i<20)
+					warning=true;
+			}
+			if(time>bossTime) {
+				warning=false;
+			}
+			
 		}
 	}
 	
@@ -266,6 +306,19 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 					System.out.println("score = "+score);
 				}
 			}
+			for(int z=0;z<boss_List.size();++z) {
+				
+				if(killEnemy(attack.x,attack.y,boss.x,boss.y,attack_width,attack_height,boss_width,boss_height)) {
+					attack_List.remove(i);
+					attackCount++;
+					//boss에게 10번 공격하면 죽음
+					if(attackCount>10) {
+						boss_List.remove(z);
+						score+=5000; //적 퇴치 후 점수 up
+						}
+					System.out.println("score = "+score);
+				}
+			}
 		}
 	}
 	
@@ -279,7 +332,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		}
 		
 		if(count%100 == 0) {
-			rand = (int)(Math.random()*650+20);
+			rand = (int)(Math.random()*610+20);
 			enemy = new Enemy(700+100,rand);
 			enemy_List.add(enemy);
 		}
@@ -295,10 +348,24 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		}
 		if(time>300) {
 			if(count%100 == 5) {
-				rand = (int)(Math.random()*650+20);
+				rand = (int)(Math.random()*610+20);
 				enemy2 = new Enemy(700+100,rand);
 				enemy2_List.add(enemy2);
 			}
+		}
+	}
+	
+	public void bossProcess() {
+		for(int i = 0; i<boss_List.size();i++) {
+			boss = (Boss)(boss_List.get(i));
+			boss.move();
+			if(boss.x<470) {
+				boss.mv=false;
+			}
+		}
+		if(time==bossTime) {
+			boss = new Boss(700+100,100);
+			boss_List.add(boss);
 		}
 	}
 	
@@ -339,8 +406,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 				if(life_List.size()<=0) {
 					//목숨이 0이 되면 게임 종료
 					System.out.println("the end");
-					drawFail();
-					thread.interrupt();
+					game=true;
+					//thread.interrupt();
 					//결과 창 띄우기
 					
 				}
