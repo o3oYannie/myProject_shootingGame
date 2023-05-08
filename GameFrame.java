@@ -24,22 +24,32 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private ImageIcon failIcon = new ImageIcon("failboogie.png");
 	private ImageIcon warningIcon = new ImageIcon("warning.png");
 	private ImageIcon bossIcon = new ImageIcon("alienboss.png");
+	private ImageIcon successIcon = new ImageIcon("success.png");
+	
 	private int x; //user초기값
 	private int y; //user 초기값
+	
 	private Image user = userImage.getImage();
 	private Image enemyImg = enemyIcon.getImage();
 	private Image enemy2Img = enemy2Icon.getImage();
+	
 	private ArrayList attack_List = new ArrayList();
 	private ArrayList enemy_List = new ArrayList();
 	private ArrayList enemy2_List = new ArrayList();
 	private ArrayList life_List = new ArrayList();
 	private ArrayList boss_List = new ArrayList();
+	private ArrayList fireball_List = new ArrayList();
+	
 	private Image attackImg = attackItem.getImage();
 	private Image lifeImg = lifeIcon.getImage();
 	private Image backImg = backIcon.getImage();
 	private Image failImg = failIcon.getImage();
-	private Image warningImg = warningIcon.getImage();
+	//private Image warningImg = warningIcon.getImage();
+	private Image warningImg = Toolkit.getDefaultToolkit().createImage("warning.gif");  
+	private Image fireballImg = Toolkit.getDefaultToolkit().createImage("fireball.gif");
 	private Image bossImg = bossIcon.getImage();
+	private Image successImg = successIcon.getImage();
+	
 	private int count;
 	private int rand;
 	private int enemy_width;
@@ -52,18 +62,26 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private int attack_height;
 	private int user_width;
 	private int user_height;
+	private int fb_width;
+	private int fb_height;
+	
 	private int lifes;
 	private int score;
 	private int time;
 	private int bossTime=500;
 	private int attackCount=0; //보스에게 공격한 수
 	private boolean game=false;
+	private boolean fail=false;
 	private boolean warning = false;
+	private boolean attackStop = false;
+	
 	private Enemy enemy;
 	private Enemy enemy2;
 	private Attack attack;
 	private Life life;
 	private Boss boss;
+	private Fireball fb;
+	
 	//키조작 on/off
 	private boolean KUp =false;
 	private boolean KDown=false;
@@ -100,6 +118,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		lifes = 5;
 		score = 0;
 		time = 0;
+		
 		enemy_width = imageWidth("alien1.png");
 		enemy_height = imageHeight("alien1.png");
 		
@@ -111,6 +130,9 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		
 		attack_width = imageWidth("attack.png");
 		attack_height = imageHeight("attack.png");
+		
+		fb_width=imageWidth("fireball.gif");
+		fb_height=imageHeight("fireball.gif");
 		
 		user_width = imageWidth("sangsangBoogie.png");
 		user_height = imageHeight("sangsangBoogie.png");
@@ -137,6 +159,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 				lifeProcess();
 				timeProcess();
 				bossProcess();
+				fireballProcess();
+				
 				repaint();
 				Thread.sleep(20);
 				count++;
@@ -170,9 +194,11 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		}
 		if(time>bossTime) {
 			drawBoss();
+			drawFireball();
 		}
 		if(game==true) {
 			drawFail();
+			drawSuccess();
 		}
 		g.drawImage(bufferImg,0,0,this);
 		
@@ -184,6 +210,15 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 				attack=(Attack)(attack_List.get(i));
 				bufferGraphics.drawImage(attackImg, attack.x, attack.y,this);
 				
+			}
+		}
+	}
+	
+	public void drawFireball() {
+		if(game==false) {
+			for(int i = 0; i< fireball_List.size(); ++i) {
+				fb=(Fireball)(fireball_List.get(i));
+				bufferGraphics.drawImage(fireballImg, fb.x, fb.y, this);
 			}
 		}
 	}
@@ -237,25 +272,55 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	
 	public void drawWarning() {
 		if(warning==true) {
-			bufferGraphics.drawImage(warningImg,200,120,this);}
+			bufferGraphics.drawImage(warningImg,200,200,this);}
 	}
 	
 	public void drawFail() {
-		bufferGraphics.drawImage(failImg,100,120,this);
+		if(game==true && fail==true) {
+			bufferGraphics.drawImage(failImg,100,120,this);
+			bufferGraphics.setColor(Color.WHITE);
+			bufferGraphics.setFont(new Font("Arail",Font.BOLD,150));
+			bufferGraphics.drawString("FAIL",400,370);
+			
+			
+		}
+		
 	}
 	
-	public void drawBoss() {
-		for(int i=0; i<boss_List.size();++i) {
-			boss=(Boss)(boss_List.get(i));
-			bufferGraphics.drawImage(bossImg,boss.x,boss.y,this);
+	public void drawSuccess() {
+		if(game==true && fail==false) {
+			bufferGraphics.drawImage(successImg,20,120,this);
+			bufferGraphics.setColor(Color.WHITE);
+			bufferGraphics.setFont(new Font("Arail",Font.BOLD,150));
+			bufferGraphics.drawString("CLEAR",330,370);
 		}
 	}
 	
-	public void KeyProcess() {
-		if(KUp == true) y -= 7;
-		if(KDown == true) y+=7;
-		if(KLeft == true) x-=7;
-		if(KRight == true) x+=7;
+	public void drawBoss() {
+		if(game == false) {
+			for(int i=0; i<boss_List.size();++i) {
+				boss=(Boss)(boss_List.get(i));
+				bufferGraphics.drawImage(bossImg,boss.x,boss.y,this);
+				bufferGraphics.setColor(Color.GREEN);
+				bufferGraphics.fillRect(boss.x+100,boss.y-20,boss.life*10,8);
+			}
+		}
+	}
+
+	
+	public void KeyProcess() { //방향키
+		if(KUp == true) {
+			if(y>10) y -= 7;
+		}
+		if(KDown == true) {
+			if(y<550) y+=7;
+		}
+		if(KLeft == true) {
+			if(x>-10) x-=7;
+		}
+		if(KRight == true) {
+			if(x<800) x+=7;
+		}
 	}
 	
 	public void timeProcess() {
@@ -263,10 +328,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			enemy_List.clear();
 			enemy2_List.clear(); //보스 외의 적들 사라짐
 			for(int i=0;i<100;i++) {
-				if(i>20&&i>40)
-					warning=false; 
-				else if(i>0&&i<20)
-					warning=true;
+				attackStop=true;
+				warning=true;
 			}
 			if(time>bossTime) {
 				warning=false;
@@ -275,11 +338,12 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		}
 	}
 	
-	public void attackProcess(){
-		if(KSpace == true) {
+	public void attackProcess(){ //유저가 적들을 공격할 때
+		if(KSpace == true) {//유저가 공격
 			if(count%5==0) {
 				attack = new Attack(x+100,y+40);
 				attack_List.add(attack);
+				KSpace = false;
 			}
 		}
 		
@@ -311,14 +375,18 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 				if(killEnemy(attack.x,attack.y,boss.x,boss.y,attack_width,attack_height,boss_width,boss_height)) {
 					attack_List.remove(i);
 					attackCount++;
+					boss.life--;
 					//boss에게 10번 공격하면 죽음
-					if(attackCount>10) {
+					if(attackCount>=10) {
 						boss_List.remove(z);
 						score+=5000; //적 퇴치 후 점수 up
+						game=true; //게임종료
+						thread.interrupt();
 						}
 					System.out.println("score = "+score);
 				}
 			}
+			
 		}
 	}
 	
@@ -348,7 +416,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		}
 		if(time>300) {
 			if(count%100 == 5) {
-				rand = (int)(Math.random()*610+20);
+				rand = (int)(Math.random()*650+10);
 				enemy2 = new Enemy(700+100,rand);
 				enemy2_List.add(enemy2);
 			}
@@ -359,13 +427,36 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		for(int i = 0; i<boss_List.size();i++) {
 			boss = (Boss)(boss_List.get(i));
 			boss.move();
-			if(boss.x<470) {
+			if(boss.x<490) {
+				attackStop=false;
 				boss.mv=false;
 			}
 		}
 		if(time==bossTime) {
 			boss = new Boss(700+100,100);
 			boss_List.add(boss);
+		}
+	}
+	
+	public void fireballProcess() {
+		for(int i= 0 ;i<fireball_List.size();i++) {
+			fb=(Fireball)(fireball_List.get(i));
+			fb.move();
+			if(fb.x<-200) {
+				fireball_List.remove(i);
+			}
+		}	
+		if(time>bossTime+50) {
+			if(count%100==0||count%150==0) { 
+				int n =2;
+				if(time>1500) n=3;
+				for(int j=0;j<n;j++) {
+					rand = (int)(Math.random()*200+30);
+					fb = new Fireball(470,200+rand*j);
+					System.out.println("fireball : "+j);
+					fireball_List.add(fb);
+				}
+			}
 		}
 	}
 	
@@ -389,7 +480,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 				if(life_List.size()<=0) {
 					//목숨이 0이 되면 게임 종료
 					System.out.println("the end");
-					drawFail();
+					game=true;
+					fail=true;
 					thread.interrupt();
 					//결과 창 띄우기
 					
@@ -407,13 +499,32 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 					//목숨이 0이 되면 게임 종료
 					System.out.println("the end");
 					game=true;
-					//thread.interrupt();
+					fail=true;
+					thread.interrupt();
 					//결과 창 띄우기
 					
 				}
 			}
 		}
-		
+		for(int j=0;j<fireball_List.size();++j) {
+			fb=(Fireball)fireball_List.get(j);
+			if(killEnemy(x,y,fb.x,fb.y,user_width,user_height,fb_width,fb_height)) { //enemy와 닿으면
+				life_List.remove(life_List.size()-1);
+				fireball_List.remove(j);
+				lifes--;
+				x=0;
+				y=200; //적이랑 부딪히면 제자리로 가기;
+				if(life_List.size()<=0) {
+					//목숨이 0이 되면 게임 종료
+					System.out.println("the end");
+					game=true;
+					fail=true;
+					thread.interrupt();
+					//결과 창 띄우기
+					
+				}
+			}
+		}
 	}
 	
 
@@ -456,8 +567,10 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			KRight=true;
 			break;
 		case KeyEvent.VK_SPACE:
-			System.out.println("attack");
-			KSpace = true;
+			if(attackStop == false) {
+				System.out.println("attack");
+				KSpace = true;
+			}
 			break;
 		}
 	}
