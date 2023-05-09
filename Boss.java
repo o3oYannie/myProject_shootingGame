@@ -9,9 +9,17 @@ public class Boss {
 		this.y=y;
 	}
 	
-	public void move() {
+	public void move() { //보스 등장
 		if(mv==true)
 			x-=3;
+	}
+	
+	public void moveUpDown(boolean up) { //보스 위아래로 이동
+		if(up==true) {
+			y-=2;
+		}
+		else y+=2;
+		
 	}
 	
 }

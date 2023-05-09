@@ -68,12 +68,13 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private int lifes;
 	private int score;
 	private int time;
-	private int bossTime=500;
+	private int bossTime=200; //보스가 등장하는 시간
 	private int attackCount=0; //보스에게 공격한 수
 	private boolean game=false;
 	private boolean fail=false;
 	private boolean warning = false;
 	private boolean attackStop = false;
+	private boolean bossUp = true;
 	
 	private Enemy enemy;
 	private Enemy enemy2;
@@ -302,7 +303,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 				boss=(Boss)(boss_List.get(i));
 				bufferGraphics.drawImage(bossImg,boss.x,boss.y,this);
 				bufferGraphics.setColor(Color.GREEN);
-				bufferGraphics.fillRect(boss.x+100,boss.y-20,boss.life*10,8);
+				bufferGraphics.fillRect(boss.x+70,boss.y-20,boss.life*10,8);
 			}
 		}
 	}
@@ -427,15 +428,19 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		for(int i = 0; i<boss_List.size();i++) {
 			boss = (Boss)(boss_List.get(i));
 			boss.move();
-			if(boss.x<490) {
+			if(boss.x<500) {
 				attackStop=false;
 				boss.mv=false;
+				boss.moveUpDown(bossUp);
+				if(boss.y<=100) bossUp=false;
+				else if(boss.y>=300) bossUp=true;
 			}
 		}
 		if(time==bossTime) {
-			boss = new Boss(700+100,100);
+			boss = new Boss(700+100,200);
 			boss_List.add(boss);
 		}
+		
 	}
 	
 	public void fireballProcess() {
@@ -449,10 +454,10 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		if(time>bossTime+50) {
 			if(count%100==0||count%150==0) { 
 				int n =2;
-				if(time>1500) n=3;
+				if(time>=bossTime+300) n=3; //시간이 지나면 3개로 증가
 				for(int j=0;j<n;j++) {
 					rand = (int)(Math.random()*200+30);
-					fb = new Fireball(470,200+rand*j);
+					fb = new Fireball(boss.x,boss.y+rand*j);
 					System.out.println("fireball : "+j);
 					fireball_List.add(fb);
 				}
