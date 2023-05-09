@@ -13,10 +13,10 @@ import java.awt.Color;
 public class StartFrame extends JFrame{
 	
 	private StartPanel startPanel = new StartPanel();
-	private ImageIcon startIcon = new ImageIcon("start.png");
-	private ImageIcon startClickIcon = new ImageIcon("startclick.png");
-	private ImageIcon startBackIcon = new ImageIcon("startback.png");
-	private ImageIcon startBoogieIcon = new ImageIcon("startboogie.png");
+	private ImageIcon startIcon = new ImageIcon("image/start.png");
+	private ImageIcon startClickIcon = new ImageIcon("image/startclick.png");
+	private ImageIcon startBackIcon = new ImageIcon("image/startback.png");
+	private ImageIcon startBoogieIcon = new ImageIcon("image/startboogie.png");
 	private Image startBackImg = startBackIcon.getImage();
 	private Image startBoogieImg = startBoogieIcon.getImage();
 	private JButton startBtn = new JButton(startIcon);

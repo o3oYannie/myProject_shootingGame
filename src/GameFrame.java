@@ -15,16 +15,16 @@ import java.awt.image.*;
 public class GameFrame extends JFrame implements KeyListener, Runnable{
 	public JLabel text = new JLabel();  
 
-	private ImageIcon userImage = new ImageIcon("sangsangBoogie.png");
-	private ImageIcon attackItem = new ImageIcon("attack.png");
-	private ImageIcon enemyIcon =  new ImageIcon("alien1.png");
-	private ImageIcon enemy2Icon = new ImageIcon("alien2.png");
-	private ImageIcon lifeIcon =  new ImageIcon("lifeheart.png");
-	private ImageIcon backIcon = new ImageIcon("galaxy.png");
-	private ImageIcon failIcon = new ImageIcon("failboogie.png");
-	private ImageIcon warningIcon = new ImageIcon("warning.png");
-	private ImageIcon bossIcon = new ImageIcon("alienboss.png");
-	private ImageIcon successIcon = new ImageIcon("success.png");
+	private ImageIcon userImage = new ImageIcon("image/sangsangBoogie.png");
+	private ImageIcon attackItem = new ImageIcon("image/attack.png");
+	private ImageIcon enemyIcon =  new ImageIcon("image/alien1.png");
+	private ImageIcon enemy2Icon = new ImageIcon("image/alien2.png");
+	private ImageIcon lifeIcon =  new ImageIcon("image/lifeheart.png");
+	private ImageIcon backIcon = new ImageIcon("image/galaxy.png");
+	private ImageIcon failIcon = new ImageIcon("image/failboogie.png");
+	private ImageIcon warningIcon = new ImageIcon("image/warning.png");
+	private ImageIcon bossIcon = new ImageIcon("image/alienboss.png");
+	private ImageIcon successIcon = new ImageIcon("image/success.png");
 	
 	private int x; //user초기값
 	private int y; //user 초기값
@@ -45,8 +45,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private Image backImg = backIcon.getImage();
 	private Image failImg = failIcon.getImage();
 	//private Image warningImg = warningIcon.getImage();
-	private Image warningImg = Toolkit.getDefaultToolkit().createImage("warning.gif");  
-	private Image fireballImg = Toolkit.getDefaultToolkit().createImage("fireball.gif");
+	private Image warningImg = Toolkit.getDefaultToolkit().createImage("image/warning.gif");  
+	private Image fireballImg = Toolkit.getDefaultToolkit().createImage("image/fireball.gif");
 	private Image bossImg = bossIcon.getImage();
 	private Image successImg = successIcon.getImage();
 	
@@ -68,7 +68,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private int lifes;
 	private int score;
 	private int time;
-	private int bossTime=1000; //보스가 등장하는 시간
+	private int bossTime=1500; //보스가 등장하는 시간
 	private int attackCount=0; //보스에게 공격한 수
 	private boolean game=false;
 	private boolean fail=false;
@@ -120,23 +120,23 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		score = 0;
 		time = 0;
 		
-		enemy_width = imageWidth("alien1.png");
-		enemy_height = imageHeight("alien1.png");
+		enemy_width = imageWidth("image/alien1.png");
+		enemy_height = imageHeight("image/alien1.png");
 		
-		enemy2_width = imageWidth("alien2.png");
-		enemy2_height = imageHeight("alien2.png");
+		enemy2_width = imageWidth("image/alien2.png");
+		enemy2_height = imageHeight("image/alien2.png");
 		
-		boss_width = imageWidth("alienboss.png");
-		boss_height = imageHeight("alienboss.png");
+		boss_width = imageWidth("image/alienboss.png");
+		boss_height = imageHeight("image/alienboss.png");
 		
-		attack_width = imageWidth("attack.png");
-		attack_height = imageHeight("attack.png");
+		attack_width = imageWidth("image/attack.png");
+		attack_height = imageHeight("image/attack.png");
 		
-		fb_width=imageWidth("fireball.gif");
-		fb_height=imageHeight("fireball.gif");
+		fb_width=imageWidth("image/fireball.gif");
+		fb_height=imageHeight("image/fireball.gif");
 		
-		user_width = imageWidth("sangsangBoogie.png");
-		user_height = imageHeight("sangsangBoogie.png");
+		user_width = imageWidth("image/sangsangBoogie.png");
+		user_height = imageHeight("image/sangsangBoogie.png");
 	}
 
 	//게임 시작 메소드
@@ -202,9 +202,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			drawSuccess();
 		}
 		g.drawImage(bufferImg,0,0,this);
-		
-		
 	}
+	//등껍데기
 	public void drawAttack() {
 		if(game == false) {
 			for(int i = 0; i< attack_List.size(); ++  i) {
@@ -214,7 +213,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			}
 		}
 	}
-	
+	//보스가 날리는 파이어볼
 	public void drawFireball() {
 		if(game==false) {
 			for(int i = 0; i< fireball_List.size(); ++i) {
@@ -223,7 +222,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			}
 		}
 	}
-	
+	//빨간문어 외계인
 	public void drawEnemy() {
 		if(game == false) {
 			for(int i=0;i<enemy_List.size();++i) {
@@ -232,7 +231,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			}
 		}
 	}
-	
+	//초록문어 외계인
 	public void drawEnemy2() {
 		if(game == false) {
 			for(int i=0;i<enemy2_List.size();++i) {
@@ -242,7 +241,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		}
 
 	}
-	
+	//하트 수명
 	public void drawLife() { //목숨 다섯개 그리기
 		if(game == false) {
 			for(int i=0; i<life_List.size();++i) {
@@ -251,18 +250,18 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			}
 		}
 	}
-	
+	//유저
 	public void drawCanvas() {
 		//bufferGraphics.clearRect(0,0,900,700);
 		if(game == false) {
 			bufferGraphics.drawImage(user,x,y,this);
 		}
 	}
-	
+	//뒷 배경
 	public void drawBackGround() {
 		bufferGraphics.drawImage(backImg,0,0,this);
 	}
-	
+	//점수판
 	public void drawScore() {
 		if(game == false) {
 			bufferGraphics.setColor(Color.WHITE);
@@ -270,12 +269,12 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			bufferGraphics.drawString(Integer.toString(score),720,80);
 		}
 	}
-	
+	//보스 등장 경고 표시(등껍질 공격 잠시 멈춤)
 	public void drawWarning() {
 		if(warning==true) {
 			bufferGraphics.drawImage(warningImg,200,200,this);}
 	}
-	
+	//fail 일 때
 	public void drawFail() {
 		if(game==true && fail==true) {
 			bufferGraphics.drawImage(failImg,100,120,this);
@@ -288,7 +287,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		}
 		
 	}
-	
+	//성공 일 때
 	public void drawSuccess() {
 		if(game==true && fail==false) {
 			bufferGraphics.drawImage(successImg,20,120,this);
@@ -299,7 +298,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			bufferGraphics.drawString("Score : "+Integer.toString(score),400,420);
 		}
 	}
-	
+	//보스
 	public void drawBoss() {
 		if(game == false) {
 			for(int i=0; i<boss_List.size();++i) {
@@ -326,7 +325,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			if(x<800) x+=7;
 		}
 	}
-	
+	//시간
 	public void timeProcess() {
 		if(time>(bossTime-100)) { //적 보스 등장
 			enemy_List.clear();
@@ -341,7 +340,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			
 		}
 	}
-	
+	//등껍질 공격
 	public void attackProcess(){ //유저가 적들을 공격할 때
 		if(KSpace == true) {//유저가 공격
 			if(count%5==0) {
@@ -393,7 +392,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			
 		}
 	}
-	
+	//빨간 문어 등장
 	public void enemyProcess() {
 		for(int i = 0; i<enemy_List.size();i++) {
 			enemy = (Enemy)(enemy_List.get(i));
@@ -409,7 +408,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			enemy_List.add(enemy);
 		}
 	}
-	
+	//초록 문어들 등장 (조금 더 빠름)
 	public void enemy2Process() {
 		for(int i = 0; i<enemy2_List.size();i++) {
 			enemy2 = (Enemy)(enemy2_List.get(i));
@@ -426,7 +425,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			}
 		}
 	}
-	
+	//보스 등장
 	public void bossProcess() {
 		for(int i = 0; i<boss_List.size();i++) {
 			boss = (Boss)(boss_List.get(i));
@@ -445,7 +444,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 		}
 		
 	}
-	
+	//보스가 유저를 공격
 	public void fireballProcess() {
 		for(int i= 0 ;i<fireball_List.size();i++) {
 			fb=(Fireball)(fireball_List.get(i));
@@ -467,7 +466,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			}
 		}
 	}
-	
+	//적이나 공격에 맞으면 수명이 줄어드는 프로세스
 	public void lifeProcess() {
 		
 		if(lifeInit==true) {
@@ -554,7 +553,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	}
 	
 
-	
+	//충돌 감지
 	public boolean killEnemy(int ax,int ay,int ex,int ey,int aw,int ah,int ew,int eh) {
 		boolean kill = false;
 		
