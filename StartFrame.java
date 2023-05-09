@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import java.awt.Color;
 
 public class StartFrame extends JFrame{
 	
@@ -54,7 +55,10 @@ public class StartFrame extends JFrame{
 	
 	public void paint(Graphics g) {
 		g.drawImage(startBackImg, 0, 0, null);
-		g.drawImage(startBoogieImg,60,100,null);
+		g.drawImage(startBoogieImg,40,100,null);
+		g.setFont(new Font("Arail",Font.BOLD,90));
+		g.setColor(Color.WHITE);
+		g.drawString("SpaceBoogie",310,370);
 	}
 }
 

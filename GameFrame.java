@@ -68,7 +68,7 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 	private int lifes;
 	private int score;
 	private int time;
-	private int bossTime=200; //보스가 등장하는 시간
+	private int bossTime=1000; //보스가 등장하는 시간
 	private int attackCount=0; //보스에게 공격한 수
 	private boolean game=false;
 	private boolean fail=false;
@@ -282,7 +282,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			bufferGraphics.setColor(Color.WHITE);
 			bufferGraphics.setFont(new Font("Arail",Font.BOLD,150));
 			bufferGraphics.drawString("FAIL",400,370);
-			
+			bufferGraphics.setFont(new Font("Arail",Font.BOLD,40));
+			bufferGraphics.drawString("Score : "+Integer.toString(score),400,420);
 			
 		}
 		
@@ -294,6 +295,8 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			bufferGraphics.setColor(Color.WHITE);
 			bufferGraphics.setFont(new Font("Arail",Font.BOLD,150));
 			bufferGraphics.drawString("CLEAR",330,370);
+			bufferGraphics.setFont(new Font("Arail",Font.BOLD,40));
+			bufferGraphics.drawString("Score : "+Integer.toString(score),400,420);
 		}
 	}
 	
@@ -516,6 +519,24 @@ public class GameFrame extends JFrame implements KeyListener, Runnable{
 			if(killEnemy(x,y,fb.x,fb.y,user_width,user_height,fb_width,fb_height)) { //enemy와 닿으면
 				life_List.remove(life_List.size()-1);
 				fireball_List.remove(j);
+				lifes--;
+				x=0;
+				y=200; //적이랑 부딪히면 제자리로 가기;
+				if(life_List.size()<=0) {
+					//목숨이 0이 되면 게임 종료
+					System.out.println("the end");
+					game=true;
+					fail=true;
+					thread.interrupt();
+					//결과 창 띄우기
+				
+				}
+			}
+		}
+		for(int j=0;j<boss_List.size();++j) {
+			boss=(Boss)boss_List.get(j);
+			if(killEnemy(x,y,boss.x,boss.y,user_width,user_height,boss_width,boss_height)) { //enemy와 닿으면
+				life_List.remove(life_List.size()-1);
 				lifes--;
 				x=0;
 				y=200; //적이랑 부딪히면 제자리로 가기;
